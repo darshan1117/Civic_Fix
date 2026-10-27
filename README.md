@@ -206,7 +206,7 @@ CRON_SECRET=civicfix_escalation_secret_token_2026
 
 ## Deployment
 
-**Provide links or instructions for accessing the final application.**
+**Provide links or instructions for the final application.**
 
 - **GitHub Repository**: [https://github.com/darshan1117/Civic_Fix](https://github.com/darshan1117/Civic_Fix)
 - **Deployed Backend API**: [https://civic-fix-tgva.onrender.com](https://civic-fix-tgva.onrender.com)
