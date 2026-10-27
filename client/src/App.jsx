@@ -42,7 +42,6 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Municipal Footer */}
       <footer className={`border-t py-8 text-xs transition-colors ${
         isDark ? 'border-slate-800/80 bg-[#080C14] text-slate-400' : 'border-slate-200 bg-white text-slate-600'
       }`}>

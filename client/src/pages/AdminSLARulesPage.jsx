@@ -21,8 +21,6 @@ export default function AdminSLARulesPage() {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState(null);
   const [feedback, setFeedback] = useState(null);
-
-  // Local state for editable hours
   const [editHours, setEditHours] = useState({});
 
   const fetchData = async () => {
@@ -84,7 +82,6 @@ export default function AdminSLARulesPage() {
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Navigation */}
         <div className="flex items-center justify-between">
           <Link
             to="/admin"
@@ -96,7 +93,6 @@ export default function AdminSLARulesPage() {
           </Link>
         </div>
 
-        {/* Header */}
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-500 mb-1">
             <Settings className="w-4 h-4" /> Operational Service Standards
@@ -111,7 +107,6 @@ export default function AdminSLARulesPage() {
           </p>
         </div>
 
-        {/* Demo Mode Notice */}
         <div className={`p-4 rounded-2xl border text-xs flex items-start gap-3 transition-colors ${
           isDark
             ? 'bg-amber-950/40 border-amber-800/60 text-amber-200'
@@ -131,7 +126,6 @@ export default function AdminSLARulesPage() {
           </div>
         </div>
 
-        {/* Feedback message */}
         {feedback && (
           <div
             className={`p-4 rounded-xl text-sm flex items-center justify-between border animate-in fade-in ${
@@ -158,7 +152,6 @@ export default function AdminSLARulesPage() {
           </div>
         )}
 
-        {/* SLA Rules Table */}
         <div className={`rounded-2xl border shadow-2xs overflow-hidden transition-colors ${
           isDark
             ? 'bg-[#131B2B]/90 border-slate-800'

@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Initialize or upgrade session with a real signed JWT from backend
   useEffect(() => {
     const initializeAuth = async () => {
       const savedUserStr = localStorage.getItem('civicfix_user');
@@ -34,7 +33,6 @@ export function AuthProvider({ children }) {
         }
       }
 
-      // If token is missing or a legacy mock string, fetch a real signed JWT from backend
       if (!token || token.startsWith('demo_') || !currentUser?._id) {
         try {
           const targetEmail = currentUser?.email || 'citizen1@civicfix.org';
@@ -63,9 +61,7 @@ export function AuthProvider({ children }) {
       setNotifications(res.data || []);
       const unread = (res.data || []).filter((n) => !n.read).length;
       setUnreadCount(unread);
-    } catch {
-      // quiet
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -85,7 +81,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem('civicfix_user', JSON.stringify(userData));
       return { success: true };
     } catch (err) {
-      // Fallback: request signed demo token from backend
       try {
         const demoRes = await api.post('/auth/demo-login', { email });
         if (demoRes.data?.token) {
@@ -125,7 +120,6 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('civicfix_token');
   };
 
-  // 1-Click Evaluation persona switcher: fetches authentic JWT from backend
   const switchDemoUser = async (email) => {
     try {
       const res = await api.post('/auth/demo-login', { email });

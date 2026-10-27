@@ -19,7 +19,6 @@ import {
   Building,
 } from 'lucide-react';
 
-// Custom colored map markers based on category
 const createMarkerIcon = (color) =>
   new L.DivIcon({
     className: 'custom-leaflet-marker',
@@ -60,7 +59,6 @@ export default function AdminHotspotsPage() {
     return true;
   });
 
-  // Calculate cluster zones for hotspot circles (Bengaluru key hubs)
   const hotspotClusters = [
     { name: 'Koramangala Commercial Hub', lat: 12.9352, lng: 77.6245, radius: 900 },
     { name: 'Indiranagar 100ft Road Corridor', lat: 12.9716, lng: 77.6412, radius: 800 },
@@ -68,7 +66,6 @@ export default function AdminHotspotsPage() {
     { name: 'HSR Layout Sector 1 & 2', lat: 12.9121, lng: 77.6446, radius: 750 },
   ];
 
-  // Annotate each cluster with issue counts
   const annotatedClusters = hotspotClusters.map((cluster) => {
     const count = filteredIssues.filter((i) => {
       const dLat = (i.lat - cluster.lat) * 111000;
@@ -82,7 +79,6 @@ export default function AdminHotspotsPage() {
     <div className={`min-h-screen flex flex-col transition-colors ${
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
-      {/* Top Header */}
       <div className={`border-b px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
         isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'
       }`}>
@@ -107,7 +103,6 @@ export default function AdminHotspotsPage() {
           </div>
         </div>
 
-        {/* Category Filters */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setSelectedCat('all')}
@@ -139,9 +134,7 @@ export default function AdminHotspotsPage() {
         </div>
       </div>
 
-      {/* Main Map + Sidebar Layout */}
       <div className="flex-1 flex flex-col lg:flex-row relative">
-        {/* Left Map */}
         <div className="flex-1 min-h-[500px] lg:min-h-full relative z-0">
           {loading ? (
             <div className="h-full flex items-center justify-center p-20">
@@ -163,7 +156,6 @@ export default function AdminHotspotsPage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
 
-              {/* Hotspot Density Rings */}
               {annotatedClusters.map((cluster, i) => (
                 <Circle
                   key={i}
@@ -188,7 +180,6 @@ export default function AdminHotspotsPage() {
                 </Circle>
               ))}
 
-              {/* Individual Issue Markers */}
               {filteredIssues.map((issue) => {
                 const color =
                   issue.category?.name?.toLowerCase().includes('pothole')
@@ -237,7 +228,6 @@ export default function AdminHotspotsPage() {
           )}
         </div>
 
-        {/* Right Sidebar: Identified Hotspots & Priority List */}
         <div className={`w-full lg:w-96 border-t lg:border-t-0 lg:border-l p-5 space-y-6 overflow-y-auto max-h-[85vh] transition-colors ${
           isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'
         }`}>
@@ -252,7 +242,6 @@ export default function AdminHotspotsPage() {
             </p>
           </div>
 
-          {/* Zones */}
           <div className="space-y-3">
             {annotatedClusters.map((cluster, i) => (
               <div
@@ -287,7 +276,6 @@ export default function AdminHotspotsPage() {
             ))}
           </div>
 
-          {/* Hotspot Issue Quick Feed */}
           <div className={`space-y-3 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Active Pin List ({filteredIssues.length})

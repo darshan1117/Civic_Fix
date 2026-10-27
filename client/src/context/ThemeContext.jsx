@@ -7,10 +7,8 @@ export function ThemeProvider({ children }) {
     try {
       const saved = localStorage.getItem('civicfix_theme');
       if (saved === 'light' || saved === 'dark') return saved;
-    } catch (e) {
-      // Fallback
-    }
-    return 'dark'; // Default to dark as requested in initial design
+    } catch (e) {}
+    return 'dark';
   });
 
   useEffect(() => {

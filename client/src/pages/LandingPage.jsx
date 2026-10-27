@@ -56,7 +56,6 @@ export default function LandingPage() {
     <div className={`min-h-screen relative overflow-hidden transition-colors duration-200 ${
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
-      {/* Background ambient lighting glow */}
       <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b ${
         isDark
           ? 'from-blue-600/15 via-purple-600/10'
@@ -64,13 +63,8 @@ export default function LandingPage() {
       } to-transparent blur-3xl pointer-events-none`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10">
-        {/* Main Grid: Left Ward Scanner + Right Hero Showcase */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* LEFT SIDEBAR: Instant Ward Scanner & Live Stats */}
           <div className="lg:col-span-4 space-y-5">
-            
-            {/* Interactive Ward Defect Scanner Card */}
             <div className={`rounded-3xl border p-6 shadow-xl space-y-4 transition-colors ${
               isDark
                 ? 'bg-gradient-to-b from-[#182338] to-[#121927] border-blue-500/30 text-white'
@@ -126,7 +120,6 @@ export default function LandingPage() {
               </span>
             </div>
 
-            {/* Live Operational Metrics Cards */}
             <div className="grid grid-cols-2 gap-3">
               <div className={`p-4 rounded-2xl border text-center shadow-sm transition-colors ${
                 isDark ? 'bg-[#131B2B]/70 border-slate-800' : 'bg-white border-slate-200'
@@ -144,7 +137,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Priority Status Callout */}
             <div className={`p-4 rounded-2xl border shadow-sm space-y-1.5 text-xs transition-colors ${
               isDark ? 'bg-[#131B2B]/70 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
             }`}>
@@ -155,9 +147,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* RIGHT CENTER: Hero Headline + Clean Laptop Mockup (NO Phone Mockup, 100% Clean Map) */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Hero Title Section */}
             <div className="space-y-3">
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border ${
                 isDark
@@ -185,12 +175,10 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Laptop Mockup (Full-Width, Completely Unobstructed, ZERO Mobile Overlay) */}
             <div className="relative pt-2 pb-2">
               <div className={`relative rounded-3xl border-2 shadow-2xl p-2 sm:p-3 overflow-hidden shadow-blue-500/10 transition-colors ${
                 isDark ? 'bg-slate-900 border-slate-700/80' : 'bg-slate-200 border-slate-300'
               }`}>
-                {/* Laptop Top Chrome Bar */}
                 <div className={`h-7 rounded-t-xl px-3 flex items-center gap-2 mb-2 border-b transition-colors ${
                   isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
                 }`}>
@@ -206,14 +194,12 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Laptop Screen Content: Full Width Leaflet Map */}
                 <div className="h-80 sm:h-[420px] w-full rounded-xl overflow-hidden relative z-0">
                   <LeafletMap issues={issues.slice(0, 12)} />
                 </div>
               </div>
             </div>
 
-            {/* Action CTAs Below Devices */}
             <div className="flex flex-wrap items-center gap-4 pt-1">
               <Link
                 to="/issues"
@@ -245,7 +231,6 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* "What You Can Learn From This Architecture" */}
             <div className={`pt-8 border-t space-y-4 ${isDark ? 'border-slate-800/80' : 'border-slate-200'}`}>
               <h3 className={`text-xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-slate-950'}`}>
                 What You Can Learn From This Architecture
@@ -300,7 +285,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Floating Operational Notice Card */}
       {showNoticeBanner && (
         <div className={`fixed bottom-5 right-5 z-40 max-w-sm w-full rounded-2xl border shadow-2xl p-5 space-y-3 animate-in fade-in slide-in-from-bottom-5 ${
           isDark ? 'bg-[#131B2B] border-slate-700/90 text-slate-300' : 'bg-white border-slate-200 text-slate-700 shadow-xl'

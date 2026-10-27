@@ -26,7 +26,6 @@ export function UpvoteButton({ issueId, initialCount = 0, initialHasUpvoted = fa
         setUpvotes(res.data.upvoteCount);
       }
     } catch {
-      // Revert if API fails
       setHasUpvoted(hasUpvoted);
       setUpvotes(upvotes);
     } finally {

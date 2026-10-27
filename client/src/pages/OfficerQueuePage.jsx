@@ -30,14 +30,11 @@ export default function OfficerQueuePage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Filters
   const [selectedDept, setSelectedDept] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('active'); // active, Submitted, Acknowledged, In Progress, Reopened, all
+  const [statusFilter, setStatusFilter] = useState('active');
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('priority'); // priority, sla_deadline, createdAt
-
-  // Modal for resolving
+  const [sortBy, setSortBy] = useState('priority');
   const [resolvingIssue, setResolvingIssue] = useState(null);
 
   const fetchQueueData = async () => {
@@ -79,27 +76,23 @@ export default function OfficerQueuePage() {
   };
 
   const filteredIssues = issues.filter((issue) => {
-    // Dept filter
     if (selectedDept !== 'all') {
       const deptId = issue.department?._id || issue.department;
       if (String(deptId) !== String(selectedDept)) return false;
     }
 
-    // Status filter
     if (statusFilter === 'active') {
       if (['Resolved', 'Closed', 'Rejected'].includes(issue.status)) return false;
     } else if (statusFilter !== 'all') {
       if (issue.status !== statusFilter) return false;
     }
 
-    // Overdue filter
     if (overdueOnly) {
       const isPast = new Date(issue.sla_deadline).getTime() < Date.now();
       const isNotDone = !['Resolved', 'Closed', 'Rejected'].includes(issue.status);
       if (!isPast || !isNotDone) return false;
     }
 
-    // Search query
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
       const match =
@@ -112,7 +105,6 @@ export default function OfficerQueuePage() {
     return true;
   });
 
-  // Sorting
   const sortedIssues = [...filteredIssues].sort((a, b) => {
     if (sortBy === 'priority') {
       return (b.priority_score || 0) - (a.priority_score || 0);
@@ -138,7 +130,6 @@ export default function OfficerQueuePage() {
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-500 mb-1">
@@ -176,7 +167,6 @@ export default function OfficerQueuePage() {
           </div>
         </div>
 
-        {/* Quick KPI Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className={`p-5 rounded-2xl border shadow-2xs flex items-center justify-between transition-colors ${
             isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
@@ -232,12 +222,10 @@ export default function OfficerQueuePage() {
           </div>
         </div>
 
-        {/* Filter Controls Bar */}
         <div className={`p-4 rounded-2xl border shadow-2xs space-y-4 transition-colors ${
           isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
         }`}>
           <div className="flex flex-col md:flex-row gap-3">
-            {/* Search */}
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -253,7 +241,6 @@ export default function OfficerQueuePage() {
               />
             </div>
 
-            {/* Department Dropdown */}
             <div className="w-full md:w-56">
               <select
                 value={selectedDept}
@@ -273,7 +260,6 @@ export default function OfficerQueuePage() {
               </select>
             </div>
 
-            {/* Sort Dropdown */}
             <div className="w-full md:w-48">
               <select
                 value={sortBy}
@@ -291,7 +277,6 @@ export default function OfficerQueuePage() {
             </div>
           </div>
 
-          {/* Status Tabs */}
           <div className={`flex flex-wrap items-center gap-2 pt-2 border-t ${
             isDark ? 'border-slate-800' : 'border-slate-100'
           }`}>
@@ -336,7 +321,6 @@ export default function OfficerQueuePage() {
           </div>
         </div>
 
-        {/* Issues Queue Table / Card List */}
         {loading ? (
           <div className="p-16 flex flex-col items-center justify-center">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-3" />
@@ -373,7 +357,6 @@ export default function OfficerQueuePage() {
                       : isOverdue ? 'bg-rose-50/30 hover:bg-rose-50/50' : 'hover:bg-slate-50'
                   }`}
                 >
-                  {/* Left Info */}
                   <div className="space-y-2 max-w-2xl">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${
@@ -414,9 +397,7 @@ export default function OfficerQueuePage() {
                     </p>
                   </div>
 
-                  {/* Right Metrics & Quick Actions */}
                   <div className="flex flex-wrap items-center gap-4 lg:justify-end">
-                    {/* Priority & SLA */}
                     <div className="flex items-center gap-3">
                       <div className="text-right">
                         <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Priority</div>
@@ -434,7 +415,6 @@ export default function OfficerQueuePage() {
                       </div>
                     </div>
 
-                    {/* Operational Action Buttons */}
                     <div className="flex items-center gap-2">
                       {issue.status === 'Submitted' && (
                         <button
@@ -496,7 +476,6 @@ export default function OfficerQueuePage() {
         )}
       </div>
 
-      {/* Proof-of-Fix Modal */}
       {resolvingIssue && (
         <ProofOfFixModal
           isOpen={!!resolvingIssue}

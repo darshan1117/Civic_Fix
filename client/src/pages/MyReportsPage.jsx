@@ -26,7 +26,6 @@ export default function MyReportsPage() {
       setLoading(false);
       return;
     }
-    // Fetch issues reported by user
     api.get(`/issues?reporter=${user._id || user.id}`)
       .then((res) => {
         setIssues(res.data || []);
@@ -40,7 +39,6 @@ export default function MyReportsPage() {
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-500 mb-1">
@@ -64,7 +62,6 @@ export default function MyReportsPage() {
           </Link>
         </div>
 
-        {/* Content */}
         {loading ? (
           <div className="p-16 flex flex-col items-center justify-center">
             <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-3" />

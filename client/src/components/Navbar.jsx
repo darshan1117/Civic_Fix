@@ -30,9 +30,7 @@ export function Navbar() {
         : 'bg-white/95 border-slate-200 text-slate-900 shadow-xs'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand & Left Navigation */}
         <div className="flex items-center gap-6">
-          {/* Sun / Moon Toggle Pill (Dark & Light Mode) */}
           <button
             type="button"
             onClick={toggleTheme}
@@ -50,7 +48,6 @@ export function Navbar() {
             <Moon className={`w-3.5 h-3.5 ${isDark ? 'text-blue-400 font-extrabold' : 'text-slate-400'}`} />
           </button>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-all shrink-0">
               <Shield className="w-5 h-5 fill-white/20" />
@@ -69,7 +66,6 @@ export function Navbar() {
             </div>
           </Link>
 
-          {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-1.5 ml-4">
             <Link
               to="/issues"
@@ -154,9 +150,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        {/* Right Actions: Notification + Persona Switcher */}
         <div className="flex items-center gap-3">
-          {/* Notification Bell */}
           <div className="relative">
             <button
               type="button"
@@ -174,7 +168,6 @@ export function Navbar() {
               )}
             </button>
 
-            {/* Notification Dropdown */}
             {showNotifMenu && (
               <div className={`absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl border py-2 z-50 animate-in fade-in ${
                 isDark
@@ -213,7 +206,6 @@ export function Navbar() {
             )}
           </div>
 
-          {/* 1-Click Evaluation Persona Switcher Pill */}
           <div className="relative">
             <button
               type="button"
@@ -246,7 +238,6 @@ export function Navbar() {
               <ChevronDown className={`w-3.5 h-3.5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`} />
             </button>
 
-            {/* Persona Menu Dropdown */}
             {showPersonaMenu && (
               <div className={`absolute right-0 mt-2 w-72 rounded-2xl shadow-2xl border py-2 z-50 animate-in fade-in ${
                 isDark

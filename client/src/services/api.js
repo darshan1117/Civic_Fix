@@ -4,7 +4,6 @@ const api = axios.create({
   baseURL: '/api',
 });
 
-// Attach JWT token if available
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('civicfix_token');
   if (token) {

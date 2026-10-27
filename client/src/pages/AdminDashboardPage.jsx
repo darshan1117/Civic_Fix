@@ -100,7 +100,6 @@ export default function AdminDashboardPage() {
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-500 mb-1">
@@ -148,7 +147,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Escalation Feedback Banner */}
         {escalationResult && (
           <div
             className={`p-4 rounded-xl border text-sm flex items-start justify-between animate-in fade-in ${
@@ -179,7 +177,6 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-        {/* Primary KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className={`p-5 rounded-2xl border shadow-2xs transition-colors ${
             isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
@@ -230,9 +227,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Department Breakdown */}
           <div className={`p-6 rounded-2xl border shadow-2xs space-y-4 transition-colors ${
             isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
           }`}>
@@ -265,7 +260,6 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Category Distribution */}
           <div className={`p-6 rounded-2xl border shadow-2xs space-y-4 transition-colors ${
             isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
           }`}>
@@ -308,7 +302,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Quick Links Footer Card */}
         <div className="p-6 rounded-2xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg">
           <div className="space-y-1">
             <h3 className="text-lg font-bold">Automated SLA Escalation Cron Job</h3>

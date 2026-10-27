@@ -69,7 +69,6 @@ export default function IssuesMapPage() {
     <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 transition-colors ${
       isDark ? 'text-slate-100' : 'text-slate-900'
     }`}>
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-1 ${
@@ -124,7 +123,6 @@ export default function IssuesMapPage() {
         </div>
       </div>
 
-      {/* Category Chips & Search Bar */}
       <div className="space-y-3">
         <div className="flex gap-2 overflow-x-auto pb-1">
           <button
@@ -167,7 +165,6 @@ export default function IssuesMapPage() {
           })}
         </div>
 
-        {/* Search Input */}
         <div className="relative">
           <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${
             isDark ? 'text-slate-500' : 'text-slate-400'
@@ -186,7 +183,6 @@ export default function IssuesMapPage() {
         </div>
       </div>
 
-      {/* Main Map or List View */}
       {viewMode === 'map' ? (
         <div className={`rounded-3xl border overflow-hidden shadow-2xl p-2 relative transition-colors ${
           isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'

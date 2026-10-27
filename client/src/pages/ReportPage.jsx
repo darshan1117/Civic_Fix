@@ -91,7 +91,6 @@ export default function ReportPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // Step 2 -> 3: Check duplicates within 50m
   const handleProceedToReview = async () => {
     if (!title || title.trim().length < 5) {
       setGeneralError('Title must be at least 5 characters.');
@@ -249,7 +248,6 @@ export default function ReportPage() {
     <div className={`max-w-3xl mx-auto px-4 py-8 transition-colors ${
       isDark ? 'text-slate-100' : 'text-slate-900'
     }`}>
-      {/* 3-Step Wizard Stepper */}
       <div className="mb-8">
         <div className="flex items-center justify-between relative">
           <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 -z-10 ${
@@ -311,7 +309,6 @@ export default function ReportPage() {
         </div>
       )}
 
-      {/* STEP 1: Category & Pin Location */}
       {step === 1 && (
         <div className={`rounded-2xl p-6 sm:p-8 shadow-xs space-y-6 border transition-colors ${
           isDark
@@ -397,7 +394,6 @@ export default function ReportPage() {
         </div>
       )}
 
-      {/* STEP 2: Photos & Details */}
       {step === 2 && (
         <div className={`rounded-2xl p-6 sm:p-8 shadow-xs space-y-6 border transition-colors ${
           isDark
@@ -525,7 +521,6 @@ export default function ReportPage() {
         </div>
       )}
 
-      {/* STEP 3: Review & Final Submit */}
       {step === 3 && (
         <div className={`rounded-2xl p-6 sm:p-8 shadow-xs space-y-6 border transition-colors ${
           isDark
@@ -624,7 +619,6 @@ export default function ReportPage() {
         </div>
       )}
 
-      {/* 50m Duplicate Detection Modal */}
       <SimilarIssuesModal
         isOpen={showDuplicateModal}
         matches={similarIssues}

@@ -51,7 +51,6 @@ export default function IssueDetailPage() {
   const [actionError, setActionError] = useState(null);
   const [actionSuccess, setActionSuccess] = useState(null);
 
-  // Modals state
   const [showProofModal, setShowProofModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showReopenModal, setShowReopenModal] = useState(false);
@@ -146,7 +145,6 @@ export default function IssueDetailPage() {
       isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Navigation Breadcrumb */}
         <div className="mb-6 flex items-center justify-between">
           <Link
             to="/issues"
@@ -174,7 +172,6 @@ export default function IssueDetailPage() {
           </div>
         </div>
 
-        {/* Action feedback banners */}
         {actionSuccess && (
           <div className={`mb-6 p-4 rounded-xl text-sm flex items-center justify-between border animate-in fade-in ${
             isDark
@@ -214,9 +211,7 @@ export default function IssueDetailPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Column */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Header Card */}
             <div className={`rounded-2xl border p-6 sm:p-8 shadow-xs transition-colors ${
               isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
             }`}>
@@ -274,7 +269,6 @@ export default function IssueDetailPage() {
                 </span>
               </div>
 
-              {/* Description */}
               <div className="space-y-2 mb-6">
                 <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>
                   Citizen Description
@@ -288,7 +282,6 @@ export default function IssueDetailPage() {
                 </p>
               </div>
 
-              {/* Photos Gallery */}
               <div className="space-y-3">
                 <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>
                   Attached Photos ({reportPhotos.length})
@@ -321,7 +314,6 @@ export default function IssueDetailPage() {
                 )}
               </div>
 
-              {/* Verified Resolution Card (if proof photo exists) */}
               {proofPhotos.length > 0 && (
                 <div className={`mt-8 p-5 rounded-2xl border space-y-3 ${
                   isDark
@@ -362,7 +354,6 @@ export default function IssueDetailPage() {
               )}
             </div>
 
-            {/* Workflow Action Management Center */}
             <div className={`rounded-2xl border p-6 shadow-xs transition-colors ${
               isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
             }`}>
@@ -375,7 +366,6 @@ export default function IssueDetailPage() {
                 Lifecycle actions permitted based on your authenticated role ({user?.role || 'Guest'}).
               </p>
 
-              {/* Staff / Officer Actions */}
               {isStaff && (
                 <div className="space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -470,7 +460,6 @@ export default function IssueDetailPage() {
                 </div>
               )}
 
-              {/* Citizen Actions (When status is Resolved) */}
               {issue.status === 'Resolved' && (
                 <div className={`p-4 rounded-xl border space-y-3 mt-3 ${
                   isDark
@@ -519,7 +508,6 @@ export default function IssueDetailPage() {
               )}
             </div>
 
-            {/* Vertical Timeline */}
             <div className={`rounded-2xl border p-6 sm:p-8 shadow-xs transition-colors ${
               isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
             }`}>
@@ -536,7 +524,6 @@ export default function IssueDetailPage() {
                   const isLatest = idx === (issue.events.length - 1);
                   return (
                     <div key={idx} className="relative group">
-                      {/* Node Bullet */}
                       <div
                         className={`absolute -left-[27px] sm:-left-[35px] top-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
                           isLatest
@@ -551,7 +538,6 @@ export default function IssueDetailPage() {
                         />
                       </div>
 
-                      {/* Content */}
                       <div className="space-y-1.5">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
@@ -593,9 +579,7 @@ export default function IssueDetailPage() {
             </div>
           </div>
 
-          {/* Sidebar Column */}
           <div className="space-y-6">
-            {/* Location Map Preview */}
             <div className={`rounded-2xl border p-5 shadow-xs space-y-3 transition-colors ${
               isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
             }`}>
@@ -609,7 +593,6 @@ export default function IssueDetailPage() {
                 GPS: {issue.lat.toFixed(6)}, {issue.lng.toFixed(6)}
               </div>
 
-              {/* Leaflet Static Pin Preview */}
               <div className={`h-48 rounded-xl overflow-hidden border relative z-0 ${
                 isDark ? 'border-slate-800' : 'border-slate-200'
               }`}>
@@ -634,7 +617,6 @@ export default function IssueDetailPage() {
               </div>
             </div>
 
-            {/* SLA & Priority Meta */}
             <div className={`rounded-2xl border p-5 shadow-xs space-y-4 transition-colors ${
               isDark ? 'bg-[#131B2B]/90 border-slate-800' : 'bg-white border-slate-200'
             }`}>
@@ -688,7 +670,6 @@ export default function IssueDetailPage() {
               </div>
             </div>
 
-            {/* Help / Contact */}
             <div className={`p-5 rounded-2xl border text-xs space-y-2 transition-colors ${
               isDark ? 'bg-[#0E1524] border-slate-800 text-slate-400' : 'bg-slate-100/80 border-slate-200 text-slate-600'
             }`}>
@@ -703,7 +684,6 @@ export default function IssueDetailPage() {
         </div>
       </div>
 
-      {/* Proof-of-Fix Upload Modal */}
       <ProofOfFixModal
         isOpen={showProofModal}
         onClose={() => setShowProofModal(false)}
@@ -711,7 +691,6 @@ export default function IssueDetailPage() {
         issueTitle={issue.title}
       />
 
-      {/* Reject Modal */}
       {showRejectModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in">
           <div className={`rounded-2xl max-w-md w-full border shadow-2xl p-6 space-y-4 transition-colors ${
@@ -755,7 +734,6 @@ export default function IssueDetailPage() {
         </div>
       )}
 
-      {/* Reopen Dispute Modal */}
       {showReopenModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in">
           <div className={`rounded-2xl max-w-md w-full border shadow-2xl p-6 space-y-4 transition-colors ${

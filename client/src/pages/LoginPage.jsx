@@ -49,7 +49,6 @@ export default function LoginPage() {
       isDark ? 'bg-[#0B0F17]' : 'bg-slate-50'
     }`}>
       <div className="max-w-md w-full space-y-6">
-        {/* Brand Header */}
         <div className="text-center space-y-2">
           <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/20 mx-auto">
             <Shield className="w-6 h-6" />
@@ -62,7 +61,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* 1-Click Evaluation Personas */}
         <div className={`rounded-2xl p-4 space-y-3 border transition-colors ${
           isDark
             ? 'bg-blue-950/30 border-blue-800/40'
@@ -95,7 +93,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Standard Form */}
         <div className={`p-6 sm:p-8 rounded-2xl border shadow-sm space-y-5 transition-colors ${
           isDark
             ? 'bg-[#131B2B]/90 border-slate-800'
