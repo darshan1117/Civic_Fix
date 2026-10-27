@@ -4,6 +4,7 @@ import { LeafletMap } from '../components/LeafletMap';
 import { StatusBadge } from '../components/StatusBadge';
 import { SLABadge } from '../components/SLABadge';
 import { UpvoteButton } from '../components/UpvoteButton';
+import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 import {
   Search,
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export default function IssuesMapPage() {
+  const { isDark } = useTheme();
   const [issues, setIssues] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCat, setSelectedCat] = useState('all');
@@ -64,30 +66,38 @@ export default function IssuesMapPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
+    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 transition-colors ${
+      isDark ? 'text-slate-100' : 'text-slate-900'
+    }`}>
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-1">
+          <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-1 ${
+            isDark ? 'text-blue-400' : 'text-blue-600'
+          }`}>
             <Layers className="w-3.5 h-3.5" /> Live Municipal Registry
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
+            isDark ? 'text-white' : 'text-slate-950'
+          }`}>
             Civic Issue Map & Registry
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Real-time public transparency for citizen reports across Bengaluru.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="inline-flex rounded-xl p-1 bg-slate-900 border border-slate-800 text-xs">
+          <div className={`inline-flex rounded-xl p-1 border text-xs ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+          }`}>
             <button
               type="button"
               onClick={() => setViewMode('map')}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                 viewMode === 'map'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-400 hover:text-white'
+                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Map View
@@ -95,10 +105,10 @@ export default function IssuesMapPage() {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                 viewMode === 'list'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-400 hover:text-white'
+                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               List View ({filtered.length})
@@ -123,7 +133,9 @@ export default function IssuesMapPage() {
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 cursor-pointer transition-all ${
               selectedCat === 'all'
                 ? 'bg-blue-600 text-white shadow-glow-blue'
-                : 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
+                : isDark
+                ? 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
+                : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'
             }`}
           >
             All Categories ({issues.length})
@@ -142,7 +154,9 @@ export default function IssuesMapPage() {
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 cursor-pointer transition-all inline-flex items-center gap-1.5 ${
                   isSelected
                     ? 'bg-blue-600 text-white shadow-glow-blue'
-                    : 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
+                    : isDark
+                    ? 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -155,20 +169,28 @@ export default function IssuesMapPage() {
 
         {/* Search Input */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${
+            isDark ? 'text-slate-500' : 'text-slate-400'
+          }`} />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by ticket ID (CF-...), problem description, or street name..."
-            className="w-full pl-10 pr-4 py-2.5 bg-[#131B2B] border border-slate-800 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 transition"
+            className={`w-full pl-10 pr-4 py-2.5 rounded-2xl text-xs transition border focus:outline-hidden focus:ring-2 focus:ring-blue-500 ${
+              isDark
+                ? 'bg-[#131B2B] border-slate-800 text-white placeholder-slate-500'
+                : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 shadow-2xs'
+            }`}
           />
         </div>
       </div>
 
       {/* Main Map or List View */}
       {viewMode === 'map' ? (
-        <div className="bg-[#131B2B] rounded-3xl border border-slate-800 overflow-hidden shadow-2xl p-2 relative">
+        <div className={`rounded-3xl border overflow-hidden shadow-2xl p-2 relative transition-colors ${
+          isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'
+        }`}>
           <div className="h-[600px] w-full rounded-2xl overflow-hidden relative z-0">
             <LeafletMap issues={filtered} />
           </div>
@@ -181,11 +203,19 @@ export default function IssuesMapPage() {
             return (
               <div
                 key={issue._id}
-                className="bg-[#131B2B] rounded-2xl border border-slate-800 p-5 space-y-3 hover:border-slate-700 transition flex flex-col justify-between shadow-xl"
+                className={`rounded-2xl border p-5 space-y-3 transition flex flex-col justify-between shadow-xl ${
+                  isDark
+                    ? 'bg-[#131B2B] border-slate-800 hover:border-slate-700'
+                    : 'bg-white border-slate-200 hover:border-slate-300'
+                }`}
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+                    <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded border ${
+                      isDark
+                        ? 'bg-slate-900 text-slate-300 border-slate-800'
+                        : 'bg-slate-100 text-slate-700 border-slate-200'
+                    }`}>
                       {issue.public_id}
                     </span>
                     <StatusBadge status={issue.status} size="sm" />
@@ -193,22 +223,26 @@ export default function IssuesMapPage() {
 
                   <Link
                     to={`/issues/${issue.public_id || issue._id}`}
-                    className="font-bold text-sm text-white hover:text-blue-400 transition block line-clamp-2"
+                    className={`font-bold text-sm transition block line-clamp-2 ${
+                      isDark ? 'text-white hover:text-blue-400' : 'text-slate-900 hover:text-blue-600'
+                    }`}
                   >
                     {issue.title}
                   </Link>
 
-                  <p className="text-xs text-slate-400 line-clamp-2">
+                  <p className={`text-xs line-clamp-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                     {issue.description}
                   </p>
 
-                  <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                  <p className={`text-[11px] flex items-center gap-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>
                     <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                     <span className="truncate">{issue.address_text}</span>
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                <div className={`pt-3 border-t flex items-center justify-between gap-2 ${
+                  isDark ? 'border-slate-800/80' : 'border-slate-100'
+                }`}>
                   <SLABadge
                     createdAt={issue.createdAt}
                     slaDeadline={issue.sla_deadline}

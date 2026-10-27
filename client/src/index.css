@@ -3,9 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+  :root.dark,
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-[#0B0F17] dark:text-slate-100 transition-colors duration-200 antialiased min-h-screen;
+    background-color: #f8fafc;
+    color: #0f172a;
+    transition-property: color, background-color, border-color;
+    transition-duration: 200ms;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html.dark body,
+  body.dark,
+  html[data-theme="dark"] body {
+    background-color: #0B0F17 !important;
+    color: #f1f5f9 !important;
   }
 }
 
