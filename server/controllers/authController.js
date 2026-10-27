@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.js';
 
+const getJwtSecret = () => process.env.JWT_SECRET || 'civicfix_jwt_super_secret_key_evaluation_2026';
+
 const generateToken = (id, role, name, email, department) => {
-  const secret = process.env.JWT_SECRET || 'civicfix_jwt_secret_key_2026_secure';
-  return jwt.sign({ id, role, name, email, department }, secret, {
+  return jwt.sign({ id, role, name, email, department }, getJwtSecret(), {
     expiresIn: '30d',
   });
 };
@@ -76,6 +77,49 @@ export async function login(req, res) {
     });
   } catch (error) {
     res.status(500).json({ error: error.message || 'Login failed' });
+  }
+}
+
+// 1-Click Persona login that generates authentic signed JWT for evaluation
+export async function demoLogin(req, res) {
+  try {
+    const { email, role } = req.body;
+    let user = null;
+
+    if (email) {
+      user = await User.findOne({ email }).populate('department');
+    }
+    if (!user && role) {
+      user = await User.findOne({ role }).populate('department');
+    }
+    if (!user) {
+      // Pick first citizen or default
+      user = await User.findOne({ role: 'citizen' }).populate('department') || await User.findOne({}).populate('department');
+    }
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found for demo login.' });
+    }
+
+    const token = generateToken(
+      user._id,
+      user.role,
+      user.name,
+      user.email,
+      user.department?._id || user.department
+    );
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+      phone: user.phone,
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message || 'Demo login failed' });
   }
 }
 
