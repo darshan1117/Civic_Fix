@@ -16,6 +16,8 @@ import {
   Droplets,
   Waves,
   HelpCircle,
+  Layers,
+  ChevronRight,
 } from 'lucide-react';
 
 export default function IssuesMapPage() {
@@ -62,20 +64,30 @@ export default function IssuesMapPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 text-slate-100">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Civic Issue Map & Registry</h1>
-          <p className="text-xs text-slate-500 mt-1">Real-time public transparency for citizen reports across Bengaluru.</p>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-400 mb-1">
+            <Layers className="w-3.5 h-3.5" /> Live Municipal Registry
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Civic Issue Map & Registry
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Real-time public transparency for citizen reports across Bengaluru.
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="inline-flex rounded-xl p-1 bg-slate-100 text-xs">
+          <div className="inline-flex rounded-xl p-1 bg-slate-900 border border-slate-800 text-xs">
             <button
               type="button"
               onClick={() => setViewMode('map')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                viewMode === 'map' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-600'
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                viewMode === 'map'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               Map View
@@ -83,8 +95,10 @@ export default function IssuesMapPage() {
             <button
               type="button"
               onClick={() => setViewMode('list')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                viewMode === 'list' ? 'bg-white text-blue-600 shadow-2xs font-semibold' : 'text-slate-600'
+              className={`px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                viewMode === 'list'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               List View ({filtered.length})
@@ -93,23 +107,23 @@ export default function IssuesMapPage() {
 
           <Link
             to="/report"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-xs inline-flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/25 inline-flex items-center gap-1.5 transition"
           >
             <PlusCircle className="w-4 h-4" /> Report Issue
           </Link>
         </div>
       </div>
 
-      {/* Category Chips & Search */}
+      {/* Category Chips & Search Bar */}
       <div className="space-y-3">
         <div className="flex gap-2 overflow-x-auto pb-1">
           <button
             type="button"
             onClick={() => setSelectedCat('all')}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 cursor-pointer transition-all ${
               selectedCat === 'all'
-                ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-blue-600 text-white shadow-glow-blue'
+                : 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
             }`}
           >
             All Categories ({issues.length})
@@ -119,89 +133,98 @@ export default function IssuesMapPage() {
             const Icon = getCatIcon(cat.name);
             const count = issues.filter((i) => (i.category?._id || i.category) === cat._id).length;
             const isSelected = selectedCat === cat._id;
+
             return (
               <button
                 key={cat._id}
                 type="button"
                 onClick={() => setSelectedCat(cat._id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 inline-flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold shrink-0 cursor-pointer transition-all inline-flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                    ? 'bg-blue-600 text-white shadow-glow-blue'
+                    : 'bg-[#131B2B] text-slate-300 border border-slate-800 hover:border-slate-700 hover:bg-slate-800'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
                 <span>{cat.name}</span>
-                <span className="opacity-75 text-[10px]">({count})</span>
+                <span className="text-[10px] opacity-75">({count})</span>
               </button>
             );
           })}
         </div>
 
-        <div className="relative max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search issues by location or keywords..."
-            className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+            placeholder="Search by ticket ID (CF-...), problem description, or street name..."
+            className="w-full pl-10 pr-4 py-2.5 bg-[#131B2B] border border-slate-800 rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
       </div>
 
+      {/* Main Map or List View */}
       {viewMode === 'map' ? (
-        <LeafletMap issues={filtered} height="550px" />
+        <div className="bg-[#131B2B] rounded-3xl border border-slate-800 overflow-hidden shadow-2xl p-2 relative">
+          <div className="h-[600px] w-full rounded-2xl overflow-hidden relative z-0">
+            <LeafletMap issues={filtered} />
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((issue) => (
-            <div
-              key={issue._id || issue.id}
-              className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:border-blue-400 transition-colors flex flex-col justify-between"
-            >
-              <div>
-                {issue.photos?.[0] && (
-                  <div className="w-full h-44 bg-slate-100 overflow-hidden relative">
-                    <img src={issue.photos[0].url} alt={issue.title} className="w-full h-full object-cover" />
-                    <div className="absolute top-2 left-2">
-                      <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-900/80 text-white">
-                        {issue.public_id}
-                      </span>
-                    </div>
-                  </div>
-                )}
+          {filtered.map((issue) => {
+            const isResolved = ['Resolved', 'Closed'].includes(issue.status);
 
-                <div className="p-4 space-y-2">
+            return (
+              <div
+                key={issue._id}
+                className="bg-[#131B2B] rounded-2xl border border-slate-800 p-5 space-y-3 hover:border-slate-700 transition flex flex-col justify-between shadow-xl"
+              >
+                <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">
-                      {issue.category?.name || 'Hazard'}
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+                      {issue.public_id}
                     </span>
                     <StatusBadge status={issue.status} size="sm" />
                   </div>
-                  <h3 className="font-bold text-sm text-slate-900 line-clamp-2 leading-snug">{issue.title}</h3>
-                  <p className="text-xs text-slate-500 flex items-center gap-1 line-clamp-1">
-                    <MapPin className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                    {issue.address_text}
+
+                  <Link
+                    to={`/issues/${issue.public_id || issue._id}`}
+                    className="font-bold text-sm text-white hover:text-blue-400 transition block line-clamp-2"
+                  >
+                    {issue.title}
+                  </Link>
+
+                  <p className="text-xs text-slate-400 line-clamp-2">
+                    {issue.description}
+                  </p>
+
+                  <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span className="truncate">{issue.address_text}</span>
                   </p>
                 </div>
-              </div>
 
-              <div className="p-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                <UpvoteButton
-                  issueId={issue._id || issue.id}
-                  initialCount={issue.upvote_count || 0}
-                  initialHasUpvoted={issue.has_upvoted}
-                  size="sm"
-                />
-                <Link
-                  to={`/issues/${issue._id || issue.id}`}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors inline-flex items-center gap-1"
-                >
-                  View Details <ExternalLink className="w-3 h-3" />
-                </Link>
+                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                  <SLABadge
+                    createdAt={issue.createdAt}
+                    slaDeadline={issue.sla_deadline}
+                    isCompleted={isResolved}
+                  />
+
+                  <UpvoteButton
+                    issueId={issue._id}
+                    initialCount={issue.upvote_count || 0}
+                    initialHasUpvoted={issue.has_upvoted}
+                    size="sm"
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
