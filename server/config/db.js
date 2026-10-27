@@ -4,14 +4,13 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 let mongoMemoryServer = null;
 
 export async function connectDB() {
-  const customUri = process.env.MONGODB_URI;
+  const customUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
-  // 1. If explicit URI provided in environment, attempt connection
   if (customUri) {
     try {
       console.log(`[MongoDB] Connecting to configured URI: ${customUri.replace(/:([^@]+)@/, ':****@')}`);
       const conn = await mongoose.connect(customUri, {
-        serverSelectionTimeoutMS: 4000,
+        serverSelectionTimeoutMS: 8000,
       });
       console.log(`[MongoDB] Connected to database: ${conn.connection.name} on ${conn.connection.host}`);
       return true;
@@ -20,7 +19,6 @@ export async function connectDB() {
     }
   }
 
-  // 2. Try default local MongoDB daemon
   try {
     const localUri = 'mongodb://127.0.0.1:27017/civicfix';
     const conn = await mongoose.connect(localUri, {
@@ -29,12 +27,10 @@ export async function connectDB() {
     console.log(`[MongoDB] Connected to local MongoDB daemon: ${conn.connection.host}`);
     return true;
   } catch (err) {
-    // Local daemon not active, fallback to in-memory MongoDB
     console.log('[MongoDB Notice] Local MongoDB daemon not detected.');
     console.log('[MongoDB Notice] Initializing automatic in-memory MongoDB server for instant zero-configuration evaluation...');
   }
 
-  // 3. Fallback to automated MongoMemoryServer
   try {
     mongoMemoryServer = await MongoMemoryServer.create({
       instance: {
