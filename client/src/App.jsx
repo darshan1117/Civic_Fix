@@ -46,7 +46,7 @@ export default function App() {
             </div>
             <span className="font-bold text-slate-800">CivicFix</span>
             <span className="text-slate-400">|</span>
-            <span>MERN Stack End-Term Software Engineering Project</span>
+            <span>Municipal Issue Resolution & Resolution Tracking System</span>
           </div>
 
           <div className="flex items-center gap-6">

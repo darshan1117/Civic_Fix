@@ -33,7 +33,7 @@ export function Navbar() {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-lg text-slate-950 tracking-tight leading-none">CivicFix</span>
-              <span className="text-[10px] text-blue-600 font-semibold uppercase tracking-wider">MERN Stack</span>
+              <span className="text-[10px] text-blue-600 font-semibold tracking-wider">CIVIC RESOLUTION</span>
             </div>
           </Link>
 

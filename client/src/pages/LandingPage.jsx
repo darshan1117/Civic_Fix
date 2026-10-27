@@ -41,7 +41,7 @@ export default function LandingPage() {
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold shadow-2xs">
                 <Shield className="w-3.5 h-3.5" />
-                <span>Next-Gen MERN Civic Infrastructure</span>
+                <span>Smart Municipal Civic Operations</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 leading-[1.1]">
@@ -121,7 +121,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="pt-2 text-xs text-slate-500 flex items-center justify-between">
-                  <span>MERN stack REST architecture</span>
+                  <span>Automated Dispatch & SLA Tracking</span>
                   <Link to="/admin" className="text-blue-600 font-semibold hover:underline">
                     Admin Analytics →
                   </Link>

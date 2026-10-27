@@ -110,7 +110,7 @@ export default function AdminSLARulesPage() {
             <p className="font-bold">Demonstration & Evaluation Mode Supported</p>
             <p>
               By default, SLA rules are configured in hours (e.g. 24h for Garbage, 120h for Potholes).
-              For rapid end-term project evaluation, the server environment variable{' '}
+              For live demonstration and evaluation, the server environment variable{' '}
               <code className="bg-amber-100 px-1.5 py-0.5 rounded font-mono font-semibold">SLA_TIME_UNIT=minutes</code>{' '}
               can be toggled so deadlines elapse in minutes instead of days.
             </p>
