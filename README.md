@@ -1,6 +1,6 @@
 # Project Name
 
-**CivicFix** — Municipal Issue Resolution & SLA Tracking Platform
+**CivicFix** - Municipal Issue Resolution & SLA Tracking Platform
 
 ---
 
@@ -45,9 +45,9 @@ CivicFix is designed around Role-Based Access Control (RBAC) serving three key u
 
 CivicFix provides an end-to-end municipal governance system that directly eliminates these bottlenecks:
 - **Spatial Deduplication Engine**: Computes spherical Haversine distances to catch open duplicates within a 50-meter radius before database insertion, prompting citizens to upvote existing issues instead of creating duplicate work orders.
-- **Strict Role-Gated State Machine**: Enforces a formal lifecycle (`Submitted` ➔ `Acknowledged` ➔ `In Progress` ➔ `Resolved` ➔ `Closed`). Marking an issue `Resolved` strictly enforces photographic proof-of-work upload.
+- **Strict Role-Gated State Machine**: Enforces a formal lifecycle (`Submitted` -> `Acknowledged` -> `In Progress` -> `Resolved` -> `Closed`). Marking an issue `Resolved` strictly enforces photographic proof-of-work upload.
 - **Citizen Dispute Window**: Citizens have 7 days to verify the repair proof or dispute and reopen the ticket with notes.
-- **Automated Escalation Protocol**: Background cron jobs compare elapsed time against category SLA rules, auto-escalating overdue tickets from Department Staff (Tier 0) ➔ Department Head (Tier 1) ➔ Municipal Commissioner (Tier 2).
+- **Automated Escalation Protocol**: Background cron jobs compare elapsed time against category SLA rules, auto-escalating overdue tickets from Department Staff (Tier 0) -> Department Head (Tier 1) -> Municipal Commissioner (Tier 2).
 - **Dynamic Priority Scoring**: Prioritizes tickets using citizen upvotes, elapsed age, and category hazard weights so critical failures rise automatically.
 
 ---
@@ -74,16 +74,16 @@ CivicFix provides an end-to-end municipal governance system that directly elimin
 
 **What technologies did you use?**
 
-- **Frontend Framework**: React 18 (Vite 5) — Single-page application with responsive routing and state management.
-- **Styling**: Tailwind CSS 3.4 — Custom municipal theme with full Dark/Light mode support.
-- **Mapping & GIS**: Leaflet & React-Leaflet — Interactive OpenStreetMap & CartoDB tile layers with custom SVG markers.
-- **Data Visualization**: Recharts — Declarative SVG charts for municipal analytics.
-- **Icons**: Lucide React — Accessible UI iconography.
-- **Backend API**: Node.js 20+ & Express 4.19 — RESTful API architecture with modular routers, controllers, and middleware.
-- **Database & ODM**: MongoDB & Mongoose 8.4 — Document-oriented data modeling, indexing, and schema validation.
-- **In-Memory Embedded DB**: mongodb-memory-server — Automatic fallback for instant, zero-configuration local execution.
-- **Authentication**: JWT (jsonwebtoken) & Bcrypt.js — Stateless bearer token authentication with encrypted password hashing.
-- **Testing**: Node.js Native Test Runner (`node --test`) — Zero-dependency unit testing suite covering algorithms and state machines.
+- **Frontend Framework**: React 18 (Vite 5) - Single-page application with responsive routing and state management.
+- **Styling**: Tailwind CSS 3.4 - Custom municipal theme with full Dark/Light mode support.
+- **Mapping & GIS**: Leaflet & React-Leaflet - Interactive OpenStreetMap tile layer with custom SVG markers and hardware-accelerated dark mode styling.
+- **Data Visualization**: Recharts - Declarative SVG charts for municipal analytics.
+- **Icons**: Lucide React - Accessible UI iconography.
+- **Backend API**: Node.js 20+ & Express 4.19 - RESTful API architecture with modular routers, controllers, and middleware.
+- **Database & ODM**: MongoDB & Mongoose 8.4 - Document-oriented data modeling, indexing, and schema validation.
+- **In-Memory Embedded DB**: mongodb-memory-server - Automatic fallback for instant, zero-configuration local execution.
+- **Authentication**: JWT (jsonwebtoken) & Bcrypt.js - Stateless bearer token authentication with encrypted password hashing.
+- **Testing**: Node.js Native Test Runner (`node --test`) - Zero-dependency unit testing suite covering algorithms and state machines.
 
 ---
 
@@ -92,35 +92,35 @@ CivicFix provides an end-to-end municipal governance system that directly elimin
 **Explain the major components of your application.**
 
 ```text
-┌────────────────────────────────────────────────────────┐
-│                   React 18 Client                      │
-│   (Vite SPA, Tailwind CSS, Leaflet GIS, Recharts)      │
-└───────────────────────────┬────────────────────────────┘
-                            │ (Axios HTTP + JWT Bearer)
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                   Express REST API                     │
-│  ├── Auth & RBAC Middleware (JWT Verification)         │
-│  ├── Rate Limiter (50 Submissions / Hour per User)     │
-│  ├── Haversine Distance Engine (50m Deduplication)     │
-│  ├── Priority Scoring Algorithm                        │
-│  ├── Lifecycle State Machine (Proof Enforcer)          │
-│  └── Automated Cron Escalation Engine                  │
-└───────────────────────────┬────────────────────────────┘
-                            │ (Mongoose ODM)
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│                   MongoDB Database                     │
-│  Schemas: User, Issue, Department, Category,           │
-│           SLARule, Notification                        │
-└────────────────────────────────────────────────────────┘
++--------------------------------------------------------+
+|                   React 18 Client                      |
+|   (Vite SPA, Tailwind CSS, Leaflet GIS, Recharts)      |
++---------------------------+----------------------------+
+                            | (Axios HTTP + JWT Bearer)
+                            v
++--------------------------------------------------------+
+|                   Express REST API                     |
+|  |-- Auth & RBAC Middleware (JWT Verification)         |
+|  |-- Rate Limiter (50 Submissions / Hour per User)     |
+|  |-- Haversine Distance Engine (50m Deduplication)     |
+|  |-- Priority Scoring Algorithm                        |
+|  |-- Lifecycle State Machine (Proof Enforcer)          |
+|  \-- Automated Cron Escalation Engine                  |
++---------------------------+----------------------------+
+                            | (Mongoose ODM)
+                            v
++--------------------------------------------------------+
+|                   MongoDB Database                     |
+|  Schemas: User, Issue, Department, Category,           |
+|           SLARule, Notification                        |
++--------------------------------------------------------+
 ```
 
 ### Lifecycle State Machine
 ```text
-Submitted ───► Acknowledged ───► In Progress ───► Resolved ───► Closed
-    │               │                                │
-    └───────► Rejected ◄─────────────────────────────┴────► Reopened (Citizen Dispute within 7 days)
+Submitted ---> Acknowledged ---> In Progress ---> Resolved ---> Closed
+    |               |                                |
+    \-------> Rejected <-----------------------------\----> Reopened (Citizen Dispute within 7 days)
 ```
 
 ### Priority Scoring Formula
@@ -143,8 +143,8 @@ $$\text{Priority Score} = (\text{Upvotes} \times 2.5) + (\text{Age in Days} \tim
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/darshan1117/Civic-Fix.git
-   cd Civic-Fix
+   git clone https://github.com/darshan1117/Civic_Fix.git
+   cd Civic_Fix
    ```
 
 2. **Install all dependencies**:
@@ -208,7 +208,7 @@ CRON_SECRET=civicfix_escalation_secret_token_2026
 
 **Provide links or instructions for accessing the final application.**
 
-- **GitHub Repository**: [https://github.com/darshan1117/Civic-Fix](https://github.com/darshan1117/Civic-Fix)
+- **GitHub Repository**: [https://github.com/darshan1117/Civic_Fix](https://github.com/darshan1117/Civic_Fix)
 - **Deployed Application**: [https://civicfix.vercel.app](https://civicfix.vercel.app)
 - **Demo Video Link**: [https://drive.google.com/file/d/YOUR_DEMO_VIDEO_LINK_HERE/view](https://drive.google.com/file/d/YOUR_DEMO_VIDEO_LINK_HERE/view)
 
@@ -228,5 +228,3 @@ This compiles all frontend assets into `client/dist`.
   - Root Directory: `server`
   - Start Command: `node server.js`
   - Environment Variables: Configure `PORT`, `NODE_ENV=production`, `JWT_SECRET`, `MONGO_URI` (MongoDB Atlas), and `CRON_SECRET`.
-#   C i v i c _ F i x  
- 
