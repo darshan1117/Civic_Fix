@@ -48,7 +48,7 @@ export function UpvoteButton({ issueId, initialCount = 0, initialHasUpvoted = fa
       className={`inline-flex items-center rounded-xl font-medium transition-all cursor-pointer border shadow-2xs ${
         hasUpvoted
           ? 'bg-blue-600 text-white border-blue-600 shadow-blue-500/20 shadow-md'
-          : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:border-blue-400'
+          : 'bg-white dark:bg-[#131B2B] text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-blue-400'
       } ${sizeClasses[size]}`}
     >
       {hasUpvoted ? <Check className="w-4 h-4 stroke-[2.5]" /> : <ThumbsUp className="w-4 h-4 stroke-[2]" />}

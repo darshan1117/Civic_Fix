@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import { Navigation, MapPin, Loader2, AlertCircle } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import 'leaflet/dist/leaflet.css';
 
 function ClickHandler({ onMapClick }) {
@@ -16,6 +17,7 @@ export function LocationPicker({ lat, lng, onChange, addressText = '' }) {
   const [isLocating, setIsLocating] = useState(false);
   const [geoError, setGeoError] = useState(null);
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const { isDark } = useTheme();
 
   const fetchAddress = async (targetLat, targetLng) => {
     setIsGeocoding(true);
@@ -74,45 +76,67 @@ export function LocationPicker({ lat, lng, onChange, addressText = '' }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+        <span className={`text-xs font-semibold uppercase tracking-wider ${
+          isDark ? 'text-slate-300' : 'text-slate-700'
+        }`}>
           Pinpoint Hazard Location
         </span>
         <button
           type="button"
           onClick={handleUseCurrentLocation}
           disabled={isLocating}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors cursor-pointer"
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
+            isDark
+              ? 'bg-blue-950/60 text-blue-300 border-blue-800 hover:bg-blue-900/60'
+              : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+          }`}
         >
-          {isLocating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Navigation className="w-3.5 h-3.5 text-blue-600" />}
+          {isLocating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Navigation className="w-3.5 h-3.5 text-blue-500" />}
           <span>{isLocating ? 'Locating...' : 'Use my current location'}</span>
         </button>
       </div>
 
       {geoError && (
-        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2 text-xs text-amber-800">
-          <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+        <div className={`p-3 rounded-xl flex items-start gap-2 text-xs border ${
+          isDark
+            ? 'bg-amber-950/40 border-amber-800/60 text-amber-300'
+            : 'bg-amber-50 border-amber-200 text-amber-800'
+        }`}>
+          <AlertCircle className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
           <span>{geoError}</span>
         </div>
       )}
 
-      <div className="relative w-full h-80 rounded-xl overflow-hidden border border-slate-200 shadow-xs z-0">
+      <div className={`relative w-full h-80 rounded-xl overflow-hidden border shadow-xs z-0 ${
+        isDark ? 'border-slate-700' : 'border-slate-200'
+      }`}>
         <MapContainer center={[lat, lng]} zoom={15} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            url={
+              isDark
+                ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            }
           />
           <Marker position={[lat, lng]} />
           <ClickHandler onMapClick={handleMapClick} />
         </MapContainer>
 
-        <div className="absolute bottom-3 left-3 right-3 z-[1000] bg-white/95 backdrop-blur-xs p-2.5 rounded-lg border border-slate-200 shadow-md text-xs flex items-center justify-between gap-2">
+        <div className={`absolute bottom-3 left-3 right-3 z-[1000] backdrop-blur-xs p-2.5 rounded-lg border shadow-md text-xs flex items-center justify-between gap-2 transition-colors ${
+          isDark
+            ? 'bg-[#131B2B]/95 border-slate-700 text-slate-200'
+            : 'bg-white/95 border-slate-200 text-slate-700'
+        }`}>
           <div className="flex items-center gap-2 overflow-hidden">
             <MapPin className="w-4 h-4 text-rose-500 shrink-0" />
-            <span className="truncate text-slate-700">
+            <span className="truncate">
               {isGeocoding ? 'Resolving address...' : addressText || `${lat.toFixed(5)}, ${lng.toFixed(5)}`}
             </span>
           </div>
-          <span className="text-[10px] text-slate-400 shrink-0 hidden sm:inline">Tap map to reposition</span>
+          <span className={`text-[10px] shrink-0 hidden sm:inline ${
+            isDark ? 'text-slate-400' : 'text-slate-400'
+          }`}>Tap map to reposition</span>
         </div>
       </div>
     </div>

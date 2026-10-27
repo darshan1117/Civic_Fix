@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '../services/api';
+import { useTheme } from '../context/ThemeContext';
 import { StatusBadge } from '../components/StatusBadge';
 import { SLABadge } from '../components/SLABadge';
 import {
@@ -31,6 +32,7 @@ const createMarkerIcon = (color) =>
   });
 
 export default function AdminHotspotsPage() {
+  const { isDark } = useTheme();
   const [issues, setIssues] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCat, setSelectedCat] = useState('all');
@@ -77,21 +79,29 @@ export default function AdminHotspotsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className={`min-h-screen flex flex-col transition-colors ${
+      isDark ? 'bg-[#0B0F17] text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
       {/* Top Header */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className={`border-b px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+        isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'
+      }`}>
         <div className="flex items-center gap-3">
           <Link
             to="/admin"
-            className="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition"
+            className={`p-2 rounded-lg border transition cursor-pointer ${
+              isDark
+                ? 'border-slate-700 hover:bg-slate-800 text-slate-300'
+                : 'border-slate-200 hover:bg-slate-50 text-slate-600'
+            }`}
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-600">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-500">
               <Flame className="w-3.5 h-3.5" /> High-Density Civic Hotspots
             </div>
-            <h1 className="text-xl font-bold text-slate-900">
+            <h1 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
               Geographic Defect Concentration Map
             </h1>
           </div>
@@ -101,10 +111,12 @@ export default function AdminHotspotsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setSelectedCat('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               selectedCat === 'all'
                 ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : isDark
+                  ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
             All Categories ({openIssues.length})
@@ -113,10 +125,12 @@ export default function AdminHotspotsPage() {
             <button
               key={c._id}
               onClick={() => setSelectedCat(c._id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 selectedCat === c._id
                   ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : isDark
+                    ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {c.name}
@@ -130,8 +144,8 @@ export default function AdminHotspotsPage() {
         {/* Left Map */}
         <div className="flex-1 min-h-[500px] lg:min-h-full relative z-0">
           {loading ? (
-            <div className="h-full flex items-center justify-center">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <div className="h-full flex items-center justify-center p-20">
+              <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
             </div>
           ) : (
             <MapContainer
@@ -141,7 +155,11 @@ export default function AdminHotspotsPage() {
               className="w-full h-full min-h-[500px]"
             >
               <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url={
+                  isDark
+                    ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+                    : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                }
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
 
@@ -161,8 +179,8 @@ export default function AdminHotspotsPage() {
                 >
                   <Popup>
                     <div className="p-1 space-y-1">
-                      <p className="font-bold text-xs text-slate-900">{cluster.name}</p>
-                      <p className="text-xs text-rose-600 font-semibold">
+                      <p className="font-bold text-xs">{cluster.name}</p>
+                      <p className="text-xs text-rose-500 font-semibold">
                         {cluster.count} Active Reports in this zone
                       </p>
                     </div>
@@ -190,22 +208,22 @@ export default function AdminHotspotsPage() {
                     <Popup>
                       <div className="p-2 space-y-2 max-w-xs">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-slate-100 rounded">
+                          <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-800 rounded">
                             {issue.public_id}
                           </span>
                           <StatusBadge status={issue.status} size="sm" />
                         </div>
-                        <p className="font-bold text-xs text-slate-900">{issue.title}</p>
-                        <p className="text-[11px] text-slate-500 line-clamp-2">
+                        <p className="font-bold text-xs">{issue.title}</p>
+                        <p className="text-[11px] text-slate-400 line-clamp-2">
                           {issue.address_text}
                         </p>
                         <div className="pt-1 flex items-center justify-between">
-                          <span className="text-[10px] font-mono font-bold text-blue-600">
+                          <span className="text-[10px] font-mono font-bold text-blue-500">
                             P: {issue.priority_score?.toFixed(1)}
                           </span>
                           <Link
                             to={`/issues/${issue.public_id || issue._id}`}
-                            className="text-[11px] font-semibold text-blue-600 hover:underline"
+                            className="text-[11px] font-semibold text-blue-500 hover:underline"
                           >
                             Inspect &rarr;
                           </Link>
@@ -220,12 +238,16 @@ export default function AdminHotspotsPage() {
         </div>
 
         {/* Right Sidebar: Identified Hotspots & Priority List */}
-        <div className="w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 p-5 space-y-6 overflow-y-auto max-h-[85vh]">
+        <div className={`w-full lg:w-96 border-t lg:border-t-0 lg:border-l p-5 space-y-6 overflow-y-auto max-h-[85vh] transition-colors ${
+          isDark ? 'bg-[#131B2B] border-slate-800' : 'bg-white border-slate-200'
+        }`}>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1 flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-rose-600" /> High Density Wards
+            <h3 className={`text-sm font-bold mb-1 flex items-center gap-1.5 ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}>
+              <Flame className="w-4 h-4 text-rose-500" /> High Density Wards
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Zones exceeding safety density threshold based on spatial clustering.
             </p>
           </div>
@@ -235,23 +257,29 @@ export default function AdminHotspotsPage() {
             {annotatedClusters.map((cluster, i) => (
               <div
                 key={i}
-                className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1.5"
+                className={`p-3.5 rounded-xl border space-y-1.5 transition-colors ${
+                  isDark
+                    ? 'border-slate-800 bg-slate-900/60'
+                    : 'border-slate-200 bg-slate-50'
+                }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-900">{cluster.name}</span>
+                  <span className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {cluster.name}
+                  </span>
                   <span
                     className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                       cluster.count >= 3
-                        ? 'bg-rose-100 text-rose-800'
-                        : 'bg-amber-100 text-amber-800'
+                        ? isDark ? 'bg-rose-950 text-rose-300 border border-rose-800' : 'bg-rose-100 text-rose-800'
+                        : isDark ? 'bg-amber-950 text-amber-300 border border-amber-800' : 'bg-amber-100 text-amber-800'
                     }`}
                   >
                     {cluster.count} issues
                   </span>
                 </div>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
                   <div
-                    className={`h-full ${cluster.count >= 3 ? 'bg-rose-600' : 'bg-amber-500'}`}
+                    className={`h-full ${cluster.count >= 3 ? 'bg-rose-500' : 'bg-amber-500'}`}
                     style={{ width: `${Math.min(100, cluster.count * 25)}%` }}
                   />
                 </div>
@@ -260,7 +288,7 @@ export default function AdminHotspotsPage() {
           </div>
 
           {/* Hotspot Issue Quick Feed */}
-          <div className="space-y-3 pt-2 border-t border-slate-100">
+          <div className={`space-y-3 pt-2 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Active Pin List ({filteredIssues.length})
             </h4>
@@ -269,17 +297,23 @@ export default function AdminHotspotsPage() {
                 <Link
                   key={issue._id}
                   to={`/issues/${issue.public_id || issue._id}`}
-                  className="p-3 rounded-xl border border-slate-200 hover:border-blue-400 block transition group"
+                  className={`p-3 rounded-xl border block transition group cursor-pointer ${
+                    isDark
+                      ? 'border-slate-800 bg-slate-900/40 hover:border-blue-500/50'
+                      : 'border-slate-200 bg-white hover:border-blue-400'
+                  }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="font-mono text-[10px] font-bold text-slate-600">
+                    <span className="font-mono text-[10px] font-bold text-slate-400">
                       {issue.public_id}
                     </span>
-                    <span className="text-[10px] font-bold text-rose-600">
+                    <span className="text-[10px] font-bold text-rose-500">
                       Priority: {issue.priority_score?.toFixed(1)}
                     </span>
                   </div>
-                  <p className="text-xs font-semibold text-slate-800 group-hover:text-blue-600 line-clamp-1">
+                  <p className={`text-xs font-semibold line-clamp-1 transition ${
+                    isDark ? 'text-slate-200 group-hover:text-blue-400' : 'text-slate-800 group-hover:text-blue-600'
+                  }`}>
                     {issue.title}
                   </p>
                   <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">

@@ -12,7 +12,7 @@ import { calculateSLADeadline } from '../utils/sla.js';
 // Escape regex special characters to prevent ReDoS and regex syntax errors
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// Simple in-memory rate limiter: max 10 submissions per user per hour
+// In-memory rate limiter: max 50 submissions per user per hour
 const submissionTimes = new Map();
 
 function checkRateLimit(userId) {
@@ -21,15 +21,22 @@ function checkRateLimit(userId) {
   const history = submissionTimes.get(String(userId)) || [];
   const validTimes = history.filter((t) => now - t < windowMs);
 
-  if (validTimes.length >= 10) {
+  if (validTimes.length >= 50) {
     const oldest = validTimes[0];
     const resetMinutes = Math.ceil((windowMs - (now - oldest)) / 60000);
     return { allowed: false, resetMinutes };
   }
 
+  return { allowed: true };
+}
+
+function recordSubmission(userId) {
+  const now = Date.now();
+  const windowMs = 60 * 60 * 1000;
+  const history = submissionTimes.get(String(userId)) || [];
+  const validTimes = history.filter((t) => now - t < windowMs);
   validTimes.push(now);
   submissionTimes.set(String(userId), validTimes);
-  return { allowed: true };
 }
 
 export async function getIssues(req, res) {
@@ -183,22 +190,25 @@ export async function createIssue(req, res) {
   try {
     const userId = req.user._id || req.user.id;
 
-    // Rate-limit check (max 10 per hour)
+    // Rate-limit check (max 50 per hour)
     const rateCheck = checkRateLimit(userId);
     if (!rateCheck.allowed) {
       return res.status(429).json({
-        error: `Rate limit exceeded. You can submit up to 10 reports per hour. Please wait ${rateCheck.resetMinutes} minutes.`,
+        error: `Rate limit exceeded. You can submit up to 50 reports per hour. Please wait ${rateCheck.resetMinutes} minutes.`,
       });
     }
 
-    const { title, description, category_id, lat, lng, address_text, photos } = req.body;
+    const { title, description, category_id, category: categoryFromBody, lat, lng, latitude, longitude, address_text, photos } = req.body;
+    const finalCatId = category_id !== undefined ? category_id : categoryFromBody;
+    const finalLat = lat !== undefined ? lat : latitude;
+    const finalLng = lng !== undefined ? lng : longitude;
 
-    if (!title || !description || !category_id || lat === undefined || lng === undefined) {
+    if (!title || !description || !finalCatId || finalLat === undefined || finalLng === undefined) {
       return res.status(400).json({ error: 'Please provide all required fields.' });
     }
 
-    const parsedLat = parseFloat(lat);
-    const parsedLng = parseFloat(lng);
+    const parsedLat = parseFloat(finalLat);
+    const parsedLng = parseFloat(finalLng);
     if (isNaN(parsedLat) || isNaN(parsedLng) || parsedLat < -90 || parsedLat > 90 || parsedLng < -180 || parsedLng > 180) {
       return res.status(400).json({ error: 'Valid geographic latitude (-90 to 90) and longitude (-180 to 180) are required.' });
     }
@@ -207,11 +217,11 @@ export async function createIssue(req, res) {
       return res.status(400).json({ error: 'At least 1 photo is required.' });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(category_id)) {
+    if (!mongoose.Types.ObjectId.isValid(finalCatId)) {
       return res.status(404).json({ error: 'Category not found.' });
     }
 
-    const category = await Category.findById(category_id);
+    const category = await Category.findById(finalCatId);
     if (!category) return res.status(404).json({ error: 'Category not found.' });
 
     const department = await Department.findById(category.department);
@@ -284,6 +294,8 @@ export async function createIssue(req, res) {
       .populate('category')
       .populate('department')
       .populate('reporter', 'name email role');
+
+    recordSubmission(userId);
 
     res.status(201).json(populated);
   } catch (error) {

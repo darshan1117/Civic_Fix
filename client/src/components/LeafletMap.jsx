@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { StatusBadge } from './StatusBadge';
 import { SLABadge } from './SLABadge';
 import { MapPin, ExternalLink } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -16,6 +17,8 @@ L.Icon.Default.mergeOptions({
 });
 
 export function LeafletMap({ issues = [], height = '500px', center = [12.9716, 77.5946], zoom = 12 }) {
+  const { isDark } = useTheme();
+
   const createPinIcon = (catName = '', status = '') => {
     let pinColor = '#2563eb';
     const lower = (catName || '').toLowerCase();
@@ -55,11 +58,17 @@ export function LeafletMap({ issues = [], height = '500px', center = [12.9716, 7
   };
 
   return (
-    <div style={{ height }} className="w-full rounded-2xl overflow-hidden border border-slate-200 shadow-sm relative z-0">
+    <div style={{ height }} className={`w-full rounded-2xl overflow-hidden border shadow-sm relative z-0 ${
+      isDark ? 'border-slate-800' : 'border-slate-200'
+    }`}>
       <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url={
+            isDark
+              ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+              : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          }
         />
 
         {issues.map((issue) => (
@@ -79,16 +88,18 @@ export function LeafletMap({ issues = [], height = '500px', center = [12.9716, 7
                 )}
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-[10px] font-mono font-bold text-slate-500 uppercase">{issue.public_id}</span>
+                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">{issue.public_id}</span>
                     <StatusBadge status={issue.status} size="sm" />
                   </div>
-                  <h4 className="font-semibold text-sm text-slate-900 leading-snug">{issue.title}</h4>
-                  <p className="text-xs text-slate-500 flex items-center gap-1 mt-1 truncate">
+                  <h4 className={`font-semibold text-sm leading-snug ${isDark ? 'text-white' : 'text-slate-900'}`}>{issue.title}</h4>
+                  <p className="text-xs text-slate-400 flex items-center gap-1 mt-1 truncate">
                     <MapPin className="w-3 h-3 shrink-0" />
                     {issue.address_text}
                   </p>
                 </div>
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className={`pt-2 border-t flex items-center justify-between gap-2 ${
+                  isDark ? 'border-slate-800' : 'border-slate-100'
+                }`}>
                   <SLABadge
                     createdAt={issue.createdAt || issue.created_at}
                     slaDeadline={issue.sla_deadline}
@@ -96,7 +107,7 @@ export function LeafletMap({ issues = [], height = '500px', center = [12.9716, 7
                   />
                   <Link
                     to={`/issues/${issue._id || issue.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-500 hover:underline"
                   >
                     Details <ExternalLink className="w-3 h-3" />
                   </Link>
