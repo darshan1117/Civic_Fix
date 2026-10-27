@@ -212,7 +212,6 @@ CRON_SECRET=civicfix_escalation_secret_token_2026
 - **Deployed Backend API**: [https://civic-fix-tgva.onrender.com](https://civic-fix-tgva.onrender.com)
 - **API Health Check**: [https://civic-fix-tgva.onrender.com/api/health](https://civic-fix-tgva.onrender.com/api/health)
 - **Deployed Frontend Application**: [https://civic-fix-darshan1117s-projects.vercel.app](https://civic-fix-darshan1117s-projects.vercel.app)
-- **Demo Video Link**: [https://drive.google.com/file/d/YOUR_DEMO_VIDEO_LINK_HERE/view](https://drive.google.com/file/d/YOUR_DEMO_VIDEO_LINK_HERE/view)
 
 ### Production Build Instructions
 To build and verify the optimized production distribution:
