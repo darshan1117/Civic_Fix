@@ -12,15 +12,15 @@ jobs:
     steps:
       - name: Trigger SLA Escalation API
         run: |
-          APP_URL="${{ secrets.NEXT_PUBLIC_APP_URL }}"
-          if [ -z "$APP_URL" ]; then
-            APP_URL="https://civicfix.vercel.app"
+          API_URL="${{ secrets.API_URL }}"
+          if [ -z "$API_URL" ]; then
+            API_URL="http://localhost:5000"
           fi
           
-          echo "Triggering SLA escalation check at $APP_URL/api/cron/escalate"
+          echo "Triggering SLA escalation check at $API_URL/api/cron/escalate"
           
-          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST "$APP_URL/api/cron/escalate" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST "$API_URL/api/cron/escalate" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET || 'civicfix-cron-secret-demo-key' }}" \
             -H "Content-Type: application/json")
           
           HTTP_STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS" | cut -d':' -f2)
