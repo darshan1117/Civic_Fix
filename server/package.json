@@ -5,6 +5,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Server build complete'",
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node --test tests/*.test.js"
