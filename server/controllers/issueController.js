@@ -1,12 +1,16 @@
+import mongoose from 'mongoose';
 import { Issue } from '../models/Issue.js';
 import { Category } from '../models/Category.js';
 import { Department } from '../models/Department.js';
 import { SLARule } from '../models/SLARule.js';
 import { Notification } from '../models/Notification.js';
-import { calculateHaversineDistance, findDuplicateIssues } from '../utils/haversine.js';
+import { calculateHaversineDistance } from '../utils/haversine.js';
 import { validateStatusTransition } from '../utils/stateMachine.js';
 import { calculatePriorityScore } from '../utils/priority.js';
 import { calculateSLADeadline } from '../utils/sla.js';
+
+// Escape regex special characters to prevent ReDoS and regex syntax errors
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Simple in-memory rate limiter: max 10 submissions per user per hour
 const submissionTimes = new Map();
@@ -34,9 +38,9 @@ export async function getIssues(req, res) {
 
     const filter = {};
     if (status && status !== 'all') filter.status = status;
-    if (category && category !== 'all') filter.category = category;
-    if (department && department !== 'all') filter.department = department;
-    if (reporter) filter.reporter = reporter;
+    if (category && category !== 'all' && mongoose.Types.ObjectId.isValid(category)) filter.category = category;
+    if (department && department !== 'all' && mongoose.Types.ObjectId.isValid(department)) filter.department = department;
+    if (reporter && mongoose.Types.ObjectId.isValid(reporter)) filter.reporter = reporter;
 
     if (overdueOnly === 'true') {
       filter.status = { $nin: ['Resolved', 'Closed', 'Rejected'] };
@@ -44,7 +48,7 @@ export async function getIssues(req, res) {
     }
 
     if (search && search.trim()) {
-      const q = search.trim();
+      const q = escapeRegex(search.trim());
       filter.$or = [
         { title: { $regex: q, $options: 'i' } },
         { public_id: { $regex: q, $options: 'i' } },
@@ -88,11 +92,13 @@ export async function getIssueById(req, res) {
         .populate('category')
         .populate('department')
         .populate('reporter', 'name email role');
-    } else {
+    } else if (mongoose.Types.ObjectId.isValid(id)) {
       issue = await Issue.findById(id)
         .populate('category')
         .populate('department')
         .populate('reporter', 'name email role');
+    } else {
+      return res.status(404).json({ error: 'Issue not found' });
     }
 
     if (!issue) {
@@ -118,6 +124,21 @@ export async function checkDuplicates(req, res) {
       return res.status(400).json({ error: 'category_id, lat, and lng are required.' });
     }
 
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+    if (isNaN(parsedLat) || isNaN(parsedLng)) {
+      return res.status(400).json({ error: 'Coordinates must be valid numbers.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(category_id)) {
+      return res.json({
+        hasDuplicates: false,
+        count: 0,
+        radiusMeters: radius_meters,
+        matches: [],
+      });
+    }
+
     // Find all non-closed, non-rejected issues in same category
     const issues = await Issue.find({
       category: category_id,
@@ -126,7 +147,7 @@ export async function checkDuplicates(req, res) {
 
     const duplicates = [];
     for (const item of issues) {
-      const dist = calculateHaversineDistance(lat, lng, item.lat, item.lng);
+      const dist = calculateHaversineDistance(parsedLat, parsedLng, item.lat, item.lng);
       if (dist <= radius_meters) {
         duplicates.push({
           id: item._id,
@@ -176,8 +197,18 @@ export async function createIssue(req, res) {
       return res.status(400).json({ error: 'Please provide all required fields.' });
     }
 
-    if (!photos || photos.length === 0) {
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+    if (isNaN(parsedLat) || isNaN(parsedLng) || parsedLat < -90 || parsedLat > 90 || parsedLng < -180 || parsedLng > 180) {
+      return res.status(400).json({ error: 'Valid geographic latitude (-90 to 90) and longitude (-180 to 180) are required.' });
+    }
+
+    if (!photos || !Array.isArray(photos) || photos.length === 0) {
       return res.status(400).json({ error: 'At least 1 photo is required.' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(category_id)) {
+      return res.status(404).json({ error: 'Category not found.' });
     }
 
     const category = await Category.findById(category_id);
@@ -228,9 +259,9 @@ export async function createIssue(req, res) {
       department: department._id,
       title,
       description,
-      lat,
-      lng,
-      address_text: address_text || `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+      lat: parsedLat,
+      lng: parsedLng,
+      address_text: address_text || `${parsedLat.toFixed(5)}, ${parsedLng.toFixed(5)}`,
       status: 'Submitted',
       priority_score: priorityScore,
       sla_deadline: slaDeadline,
@@ -266,7 +297,13 @@ export async function updateStatus(req, res) {
     const { status, note, proofPhotoUrl } = req.body;
     const actor = req.user;
 
-    const issue = await Issue.findById(id).populate('category');
+    let issue = null;
+    if (id.startsWith('CF-')) {
+      issue = await Issue.findOne({ public_id: id }).populate('category');
+    } else if (mongoose.Types.ObjectId.isValid(id)) {
+      issue = await Issue.findById(id).populate('category');
+    }
+
     if (!issue) return res.status(404).json({ error: 'Issue not found.' });
 
     const isReporter = String(issue.reporter) === String(actor._id || actor.id);
@@ -341,7 +378,13 @@ export async function toggleUpvote(req, res) {
     const { id } = req.params;
     const userId = req.user._id || req.user.id;
 
-    const issue = await Issue.findById(id).populate('category');
+    let issue = null;
+    if (id.startsWith('CF-')) {
+      issue = await Issue.findOne({ public_id: id }).populate('category');
+    } else if (mongoose.Types.ObjectId.isValid(id)) {
+      issue = await Issue.findById(id).populate('category');
+    }
+
     if (!issue) return res.status(404).json({ error: 'Issue not found.' });
 
     const hasUpvoted = issue.upvotes.some((uid) => String(uid) === String(userId));

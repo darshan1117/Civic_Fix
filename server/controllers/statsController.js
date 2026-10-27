@@ -106,11 +106,16 @@ export async function getSLARules(req, res) {
 export async function updateSLARule(req, res) {
   try {
     const { category_id, sla_hours } = req.body;
+    const hours = parseInt(sla_hours, 10);
+    if (!category_id || isNaN(hours) || hours <= 0 || hours > 720) {
+      return res.status(400).json({ error: 'SLA hours must be an integer between 1 and 720 hours.' });
+    }
+
     let rule = await SLARule.findOne({ category: category_id });
     if (!rule) {
-      rule = await SLARule.create({ category: category_id, slaHours: sla_hours });
+      rule = await SLARule.create({ category: category_id, slaHours: hours });
     } else {
-      rule.slaHours = sla_hours;
+      rule.slaHours = hours;
       await rule.save();
     }
     const populated = await SLARule.findById(rule._id).populate('category');
