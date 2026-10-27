@@ -87,3 +87,37 @@
   background: #131B2B !important;
   border: 1px solid #1F293D !important;
 }
+
+.dark .leaflet-tile-pane,
+[data-theme="dark"] .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.dark .leaflet-container,
+[data-theme="dark"] .leaflet-container {
+  background-color: #0b0f17 !important;
+}
+
+.dark .leaflet-bar a,
+[data-theme="dark"] .leaflet-bar a {
+  background-color: #131B2B !important;
+  color: #f1f5f9 !important;
+  border-bottom: 1px solid #1F293D !important;
+}
+
+.dark .leaflet-bar a:hover,
+[data-theme="dark"] .leaflet-bar a:hover {
+  background-color: #1e293b !important;
+  color: #60a5fa !important;
+}
+
+.dark .leaflet-control-attribution,
+[data-theme="dark"] .leaflet-control-attribution {
+  background: rgba(11, 15, 23, 0.85) !important;
+  color: #94a3b8 !important;
+}
+
+.dark .leaflet-control-attribution a,
+[data-theme="dark"] .leaflet-control-attribution a {
+  color: #60a5fa !important;
+}
