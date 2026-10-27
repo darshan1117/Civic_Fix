@@ -1,7 +1,10 @@
+import jwt from 'jsonwebtoken';
 import { Issue } from '../models/Issue.js';
 import { Department } from '../models/Department.js';
 import { Notification } from '../models/Notification.js';
 import { User } from '../models/User.js';
+
+const getJwtSecret = () => process.env.JWT_SECRET || 'civicfix_jwt_super_secret_key_evaluation_2026';
 
 export async function escalateOverdueIssues(req, res) {
   try {
@@ -11,7 +14,20 @@ export async function escalateOverdueIssues(req, res) {
     const xCronSecret = req.headers['x-cron-secret'];
     const provided = bearer || xCronSecret;
 
-    const isAdmin = req.user && req.user.role === 'admin';
+    let isAdmin = req.user && req.user.role === 'admin';
+    
+    // If bearer token provided, check if it is a valid admin JWT
+    if (!isAdmin && bearer) {
+      try {
+        const decoded = jwt.verify(bearer, getJwtSecret());
+        if (decoded && decoded.role === 'admin') {
+          isAdmin = true;
+        }
+      } catch (e) {
+        // Not a JWT, check against secret
+      }
+    }
+
     const isSecretValid = provided === configuredSecret;
 
     if (!isSecretValid && !isAdmin) {

@@ -118,37 +118,36 @@ export async function getIssueById(req, res) {
 // 50m Duplicate Detection
 export async function checkDuplicates(req, res) {
   try {
-    const { category_id, lat, lng, radius_meters = 50 } = req.body;
+    const { category_id, lat, lng, latitude, longitude, radius, radius_meters } = req.body;
+    const finalLat = lat !== undefined ? lat : latitude;
+    const finalLng = lng !== undefined ? lng : longitude;
+    const finalRadius = radius_meters !== undefined ? radius_meters : (radius !== undefined ? radius : 50);
 
-    if (!category_id || lat === undefined || lng === undefined) {
-      return res.status(400).json({ error: 'category_id, lat, and lng are required.' });
+    if (finalLat === undefined || finalLng === undefined) {
+      return res.status(400).json({ error: 'Coordinates (lat, lng) are required.' });
     }
 
-    const parsedLat = parseFloat(lat);
-    const parsedLng = parseFloat(lng);
+    const parsedLat = parseFloat(finalLat);
+    const parsedLng = parseFloat(finalLng);
     if (isNaN(parsedLat) || isNaN(parsedLng)) {
       return res.status(400).json({ error: 'Coordinates must be valid numbers.' });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(category_id)) {
-      return res.json({
-        hasDuplicates: false,
-        count: 0,
-        radiusMeters: radius_meters,
-        matches: [],
-      });
+    // Build query filter
+    const query = {
+      status: { $nin: ['Closed', 'Rejected'] },
+    };
+    if (category_id && mongoose.Types.ObjectId.isValid(category_id)) {
+      query.category = category_id;
     }
 
-    // Find all non-closed, non-rejected issues in same category
-    const issues = await Issue.find({
-      category: category_id,
-      status: { $nin: ['Closed', 'Rejected'] },
-    }).populate('category');
+    // Find non-closed, non-rejected issues
+    const issues = await Issue.find(query).populate('category');
 
     const duplicates = [];
     for (const item of issues) {
       const dist = calculateHaversineDistance(parsedLat, parsedLng, item.lat, item.lng);
-      if (dist <= radius_meters) {
+      if (dist <= finalRadius) {
         duplicates.push({
           id: item._id,
           public_id: item.public_id,
@@ -171,8 +170,9 @@ export async function checkDuplicates(req, res) {
     res.json({
       hasDuplicates: duplicates.length > 0,
       count: duplicates.length,
-      radiusMeters: radius_meters,
+      radiusMeters: finalRadius,
       matches: duplicates,
+      duplicates: duplicates,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
