@@ -228,3 +228,5 @@ This compiles all frontend assets into `client/dist`.
   - Root Directory: `server`
   - Start Command: `node server.js`
   - Environment Variables: Configure `PORT`, `NODE_ENV=production`, `JWT_SECRET`, `MONGO_URI` (MongoDB Atlas), and `CRON_SECRET`.
+#   C i v i c _ F i x  
+ 
