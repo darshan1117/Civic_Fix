@@ -14,6 +14,14 @@ It eliminates uncoordinated civic reports, prevents duplicate filings within 50 
 
 ---
 
+## 📹 Demo Video & Evaluation Links
+
+- **Demo Video (3–5 Min Walkthrough)**: [Click here to watch the Video Walkthrough](https://drive.google.com/file/d/YOUR_DEMO_VIDEO_LINK_HERE/view) *(Replace with your Google Drive / YouTube / Loom link)*
+- **GitHub Repository**: [https://github.com/darshan1117/Civic-Fix](https://github.com/darshan1117/Civic-Fix)
+- **Submission Form**: [Google Form Submission](https://forms.gle/sBy4sfqyiRG2Zpom9)
+
+---
+
 ## 1. System Architecture
 
 CivicFix is organized as a clean **Client-Server Monorepo**:
